@@ -165,13 +165,16 @@ def on_interrogate(
                 tags,
                 *postprocess_opts
             )
-
+            processed_ratings = Interrogator.postprocess_tags(
+                ratings,
+                *postprocess_opts
+            )
             # TODO: switch for less print
             print(
                 f'found {len(processed_tags)} tags out of {len(tags)} from {path}'
             )
 
-            plain_tags = ', '.join(processed_tags)
+            plain_tags = ', '.join(processed_ratings) + ', ' + ', '.join(processed_tags)
 
             if batch_output_action_on_conflict == 'copy':
                 output = [plain_tags]
