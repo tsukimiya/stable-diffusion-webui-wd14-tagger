@@ -42,6 +42,7 @@ def on_interrogate(
     exclude_tags: str,
     sort_by_alphabetical_order: bool,
     add_confident_as_weight: bool,
+    use_rating_tag: bool,
     replace_underscore: bool,
     replace_underscore_excludes: str,
     escape_tag: bool,
@@ -174,7 +175,10 @@ def on_interrogate(
                 f'found {len(processed_tags)} tags out of {len(tags)} from {path}'
             )
 
-            plain_tags = ', '.join(processed_ratings) + ', ' + ', '.join(processed_tags)
+            if use_rating_tag and "explicit" in processed_ratings:
+                plain_tags = 'nsfw, ' + ', '.join(processed_tags)   #add rating tag
+            else:
+                plain_tags = ', '.join(processed_tags)
 
             if batch_output_action_on_conflict == 'copy':
                 output = [plain_tags]
@@ -235,6 +239,10 @@ def on_ui_tabs():
                         batch_input_recursive = utils.preset.component(
                             gr.Checkbox,
                             label='Use recursive with glob pattern'
+                        )
+                        use_rating_tag = utils.preset.component(
+                            gr.Checkbox,
+                            label='Use rating tags'
                         )
 
                         batch_output_dir = utils.preset.component(
@@ -468,6 +476,7 @@ def on_ui_tabs():
                     exclude_tags,
                     sort_by_alphabetical_order,
                     add_confident_as_weight,
+                    use_rating_tag,
                     replace_underscore,
                     replace_underscore_excludes,
                     escape_tag,
